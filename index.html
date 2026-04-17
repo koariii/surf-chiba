@@ -1,86 +1,159 @@
 <!DOCTYPE html>
+
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>千葉 波チェック</title>
 <style>
-  * { margin:0; padding:0; box-sizing:border-box; }
-  body {
-    min-height:100vh;
-    background: linear-gradient(160deg,#020c14 0%,#041824 50%,#02111e 100%);
-    color:#e8f4f8;
-    font-family:'Hiragino Sans','Noto Sans JP',sans-serif;
-    padding-bottom:48px;
-  }
-  header {
-    background:linear-gradient(90deg,#041824,#062030);
-    border-bottom:1px solid rgba(0,180,200,0.2);
-    padding:20px 24px 16px;
-    display:flex; align-items:flex-end;
-  }
-  .header-left .label { font-size:11px; color:#4ecdc4; letter-spacing:3px; margin-bottom:4px; text-transform:uppercase; }
-  .header-left h1 { font-size:24px; font-weight:700; color:#fff; }
-  .header-right { margin-left:auto; font-size:11px; color:#4a8fa0; }
-  .container { padding:20px 16px 0; }
-  .day-tabs { display:flex; gap:8px; margin-bottom:16px; }
-  .day-tab { flex:1; padding:10px 4px; border:none; border-radius:10px; cursor:pointer; background:rgba(255,255,255,0.05); color:#4a8fa0; font-size:13px; font-family:inherit; transition:all .2s; }
-  .day-tab.active { background:linear-gradient(135deg,#0d7377,#14a0a5); color:#fff; font-weight:700; }
-  .day-tab .sub { font-size:10px; opacity:.75; margin-top:2px; }
-  .area-tabs { display:flex; gap:8px; margin-bottom:20px; }
-  .area-tab { padding:6px 14px; border:1px solid rgba(78,205,196,0.2); border-radius:20px; cursor:pointer; background:transparent; color:#4a8fa0; font-size:12px; font-family:inherit; transition:all .2s; }
-  .area-tab.active { border-color:#4ecdc4; color:#4ecdc4; font-weight:700; }
-  .splash { text-align:center; padding:56px 0; }
-  .splash .wave-icon { font-size:48px; margin-bottom:16px; }
-  .splash p { color:#4a8fa0; font-size:13px; line-height:1.9; margin-bottom:24px; }
-  .btn-load { background:linear-gradient(135deg,#0d7377,#14a0a5); border:none; border-radius:14px; color:#fff; padding:14px 40px; font-size:15px; font-weight:700; cursor:pointer; font-family:inherit; }
-  .progress-wrap { max-width:200px; margin:16px auto 0; }
-  .progress-bar { height:4px; background:rgba(78,205,196,0.15); border-radius:4px; overflow:hidden; }
-  .progress-fill { height:100%; background:linear-gradient(90deg,#0d7377,#4ecdc4); transition:width .3s; }
-  .progress-text { font-size:11px; color:#4a8fa0; text-align:center; margin-top:6px; }
-  .error-box { background:rgba(255,100,100,0.1); border:1px solid rgba(255,100,100,0.3); border-radius:12px; padding:16px; color:#ff8888; font-size:13px; margin-bottom:16px; }
-  .btn-retry { margin-top:10px; background:rgba(255,100,100,0.2); border:none; color:#ff8888; padding:6px 16px; border-radius:8px; cursor:pointer; font-size:12px; font-family:inherit; }
-  .btn-refresh { width:100%; margin-bottom:20px; padding:9px 0; background:rgba(78,205,196,0.07); border:1px solid rgba(78,205,196,0.2); border-radius:8px; color:#4ecdc4; font-size:12px; cursor:pointer; font-family:inherit; }
-  .section-label { font-size:11px; color:#4ecdc4; letter-spacing:2px; margin-bottom:10px; text-transform:uppercase; }
-  .recommend-row { display:flex; gap:8px; overflow-x:auto; padding-bottom:4px; margin-bottom:24px; }
-  .recommend-card { min-width:130px; flex-shrink:0; background:linear-gradient(135deg,rgba(13,115,119,0.25),rgba(4,24,36,0.7)); border-radius:14px; padding:12px 14px; }
-  .recommend-card .rank { font-size:10px; color:#4a8fa0; margin-bottom:4px; }
-  .recommend-card .name { font-size:16px; font-weight:700; margin-bottom:6px; }
-  .recommend-card .rating { font-size:24px; font-weight:900; }
-  .recommend-card .area-sub { font-size:10px; color:#4a8fa0; margin-top:4px; }
-  .points-list { display:flex; flex-direction:column; gap:10px; }
-  .point-card { background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.07); border-radius:12px; padding:14px 16px; border-left-width:3px; border-left-style:solid; }
-  .card-header { display:flex; align-items:center; margin-bottom:10px; }
-  .card-name { font-size:16px; font-weight:700; }
-  .card-meta { font-size:11px; color:#4a8fa0; margin-left:8px; }
-  .card-rating { font-size:24px; font-weight:900; margin-left:auto; }
-  .stats-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:10px; }
-  .stat { background:rgba(0,0,0,0.25); border-radius:8px; padding:8px 10px; }
-  .stat .stat-label { font-size:9px; color:#4a8fa0; margin-bottom:3px; }
-  .stat .stat-val { font-size:14px; font-weight:700; }
-  .stat .stat-sub { font-size:9px; margin-top:2px; }
-  .badges { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px; }
-  .badge { font-size:11px; padding:3px 8px; border-radius:6px; }
-  .point-note { font-size:10px; color:#3a6a7a; }
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  min-height:100vh;
+  background:linear-gradient(160deg,#020c14 0%,#041824 50%,#02111e 100%);
+  color:#e8f4f8;
+  font-family:'Hiragino Sans','Noto Sans JP',sans-serif;
+  padding-bottom:48px;
+}
+header {
+  background:linear-gradient(90deg,#041824,#062030);
+  border-bottom:1px solid rgba(0,180,200,0.2);
+  padding:20px 24px 16px;
+  display:flex; align-items:flex-end;
+  position:sticky; top:0; z-index:100;
+}
+.header-left .label { font-size:11px; color:#4ecdc4; letter-spacing:3px; margin-bottom:4px; text-transform:uppercase; }
+.header-left h1 { font-size:22px; font-weight:700; color:#fff; }
+.header-right { margin-left:auto; font-size:11px; color:#4a8fa0; }
+.container { padding:20px 16px 0; }
+
+/* タブ */
+.day-tabs { display:flex; gap:8px; margin-bottom:16px; }
+.day-tab { flex:1; padding:10px 4px; border:none; border-radius:10px; cursor:pointer; background:rgba(255,255,255,0.05); color:#4a8fa0; font-size:13px; font-family:inherit; }
+.day-tab.active { background:linear-gradient(135deg,#0d7377,#14a0a5); color:#fff; font-weight:700; }
+.day-tab .sub { font-size:10px; opacity:.75; margin-top:2px; }
+.area-tabs { display:flex; gap:8px; margin-bottom:20px; }
+.area-tab { padding:6px 14px; border:1px solid rgba(78,205,196,0.2); border-radius:20px; cursor:pointer; background:transparent; color:#4a8fa0; font-size:12px; font-family:inherit; }
+.area-tab.active { border-color:#4ecdc4; color:#4ecdc4; font-weight:700; }
+
+/* スプラッシュ */
+.splash { text-align:center; padding:56px 0; }
+.splash .wave-icon { font-size:48px; margin-bottom:16px; }
+.splash p { color:#4a8fa0; font-size:13px; line-height:1.9; margin-bottom:24px; }
+.btn-load { background:linear-gradient(135deg,#0d7377,#14a0a5); border:none; border-radius:14px; color:#fff; padding:14px 40px; font-size:15px; font-weight:700; cursor:pointer; font-family:inherit; }
+.progress-wrap { max-width:200px; margin:16px auto 0; }
+.progress-bar { height:4px; background:rgba(78,205,196,0.15); border-radius:4px; overflow:hidden; }
+.progress-fill { height:100%; background:linear-gradient(90deg,#0d7377,#4ecdc4); transition:width .3s; }
+.progress-text { font-size:11px; color:#4a8fa0; text-align:center; margin-top:6px; }
+.error-box { background:rgba(255,100,100,0.1); border:1px solid rgba(255,100,100,0.3); border-radius:12px; padding:16px; color:#ff8888; font-size:13px; margin-bottom:16px; }
+.btn-retry { margin-top:10px; background:rgba(255,100,100,0.2); border:none; color:#ff8888; padding:6px 16px; border-radius:8px; cursor:pointer; font-size:12px; font-family:inherit; }
+.btn-refresh { width:100%; margin-bottom:20px; padding:9px 0; background:rgba(78,205,196,0.07); border:1px solid rgba(78,205,196,0.2); border-radius:8px; color:#4ecdc4; font-size:12px; cursor:pointer; font-family:inherit; }
+
+/* セクションラベル */
+.section-label { font-size:11px; color:#4ecdc4; letter-spacing:2px; margin-bottom:10px; text-transform:uppercase; }
+
+/* おすすめ */
+.recommend-row { display:flex; gap:8px; overflow-x:auto; padding-bottom:4px; margin-bottom:24px; }
+.recommend-card { min-width:120px; flex-shrink:0; background:linear-gradient(135deg,rgba(13,115,119,0.25),rgba(4,24,36,0.7)); border-radius:14px; padding:12px 14px; cursor:pointer; }
+.recommend-card .rank { font-size:10px; color:#4a8fa0; margin-bottom:4px; }
+.recommend-card .name { font-size:15px; font-weight:700; margin-bottom:6px; }
+.recommend-card .rating { font-size:22px; font-weight:900; }
+.recommend-card .area-sub { font-size:10px; color:#4a8fa0; margin-top:4px; }
+
+/* ポイントカード（一覧） */
+.points-list { display:flex; flex-direction:column; gap:10px; }
+.point-card { background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.07); border-radius:12px; padding:14px 16px; border-left-width:3px; border-left-style:solid; cursor:pointer; }
+.point-card:active { opacity:0.8; }
+.card-header { display:flex; align-items:center; margin-bottom:10px; }
+.card-name { font-size:16px; font-weight:700; }
+.card-meta { font-size:11px; color:#4a8fa0; margin-left:8px; }
+.card-rating { font-size:24px; font-weight:900; margin-left:auto; }
+.stats-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:10px; }
+.stat { background:rgba(0,0,0,0.25); border-radius:8px; padding:8px 10px; }
+.stat .stat-label { font-size:9px; color:#4a8fa0; margin-bottom:3px; }
+.stat .stat-val { font-size:14px; font-weight:700; }
+.stat .stat-sub { font-size:9px; margin-top:2px; }
+.badges { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px; }
+.badge { font-size:11px; padding:3px 8px; border-radius:6px; }
+.point-note { font-size:10px; color:#3a6a7a; margin-bottom:10px; }
+.tap-hint { font-size:10px; color:#2a5a6a; text-align:right; }
+
+/* ミニグラフ */
+.mini-graph { margin-top:10px; }
+.mini-graph-title { font-size:9px; color:#4a8fa0; margin-bottom:4px; }
+.mini-graph canvas { width:100%; height:48px; display:block; }
+
+/* ── 詳細画面 ── */
+#detailView {
+display:none;
+position:fixed; top:0; left:0; right:0; bottom:0;
+background:linear-gradient(160deg,#020c14 0%,#041824 50%,#02111e 100%);
+overflow-y:auto; z-index:200;
+padding-bottom:48px;
+}
+.detail-header {
+background:linear-gradient(90deg,#041824,#062030);
+border-bottom:1px solid rgba(0,180,200,0.2);
+padding:16px 20px;
+display:flex; align-items:center; gap:12px;
+position:sticky; top:0; z-index:10;
+}
+.btn-back { background:rgba(78,205,196,0.1); border:1px solid rgba(78,205,196,0.3); color:#4ecdc4; padding:6px 14px; border-radius:8px; cursor:pointer; font-size:13px; font-family:inherit; }
+.detail-name { font-size:18px; font-weight:700; }
+.detail-rating { font-size:24px; font-weight:900; margin-left:auto; }
+.detail-body { padding:20px 16px 0; }
+.detail-info { display:flex; gap:8px; margin-bottom:20px; flex-wrap:wrap; }
+.detail-badge { font-size:11px; padding:4px 10px; border-radius:6px; }
+
+/* 大グラフ */
+.chart-section { margin-bottom:24px; }
+.chart-title { font-size:12px; color:#4ecdc4; margin-bottom:8px; font-weight:600; }
+.chart-wrap { background:rgba(0,0,0,0.25); border-radius:12px; padding:12px; }
+.chart-wrap canvas { width:100%; display:block; }
+.chart-labels { display:flex; justify-content:space-between; margin-top:4px; }
+.chart-labels span { font-size:9px; color:#4a8fa0; }
+
+.wind-row { display:flex; gap:6px; margin-top:8px; overflow-x:auto; padding-bottom:4px; }
+.wind-cell { flex-shrink:0; text-align:center; width:36px; }
+.wind-cell .wind-time { font-size:8px; color:#4a8fa0; margin-bottom:2px; }
+.wind-cell .wind-arrow { font-size:16px; display:block; }
+.wind-cell .wind-spd { font-size:8px; color:#e8f4f8; }
 </style>
+
 </head>
 <body>
-<header>
-  <div class="header-left">
-    <div class="label">Surf Conditions</div>
-    <h1>千葉 波チェック</h1>
+
+<!-- ── 一覧画面 ── -->
+
+<div id="listView">
+  <header>
+    <div class="header-left">
+      <div class="label">Surf Conditions</div>
+      <h1>千葉 波チェック</h1>
+    </div>
+    <div class="header-right">Open-Meteo</div>
+  </header>
+  <div class="container">
+    <div class="day-tabs" id="dayTabs"></div>
+    <div class="area-tabs">
+      <button class="area-tab active" onclick="setArea('all',this)">全エリア</button>
+      <button class="area-tab" onclick="setArea('千葉南',this)">千葉南</button>
+      <button class="area-tab" onclick="setArea('千葉北',this)">千葉北</button>
+    </div>
+    <div id="main"></div>
   </div>
-  <div class="header-right">Open-Meteo</div>
-</header>
-<div class="container">
-  <div class="day-tabs" id="dayTabs"></div>
-  <div class="area-tabs" id="areaTabs">
-    <button class="area-tab active" onclick="setArea('all',this)">全エリア</button>
-    <button class="area-tab" onclick="setArea('千葉南',this)">千葉南</button>
-    <button class="area-tab" onclick="setArea('千葉北',this)">千葉北</button>
-  </div>
-  <div id="main"></div>
 </div>
+
+<!-- ── 詳細画面 ── -->
+
+<div id="detailView">
+  <div class="detail-header">
+    <button class="btn-back" onclick="closeDetail()">← 戻る</button>
+    <span class="detail-name" id="detailName"></span>
+    <span class="detail-rating" id="detailRating"></span>
+  </div>
+  <div class="detail-body" id="detailBody"></div>
+</div>
+
 <script>
 const POINTS = [
   { id:"chikura",    name:"千倉",       area:"千葉南", lat:34.964, lon:139.960, offshore:225, bottom:"サンド",       note:"リバーマウス・周辺より1サイズ小" },
@@ -93,11 +166,15 @@ const POINTS = [
   { id:"ichinomiya",name:"一宮",       area:"千葉北", lat:35.370, lon:140.370, offshore:270, bottom:"サンド",       note:"春〜夏の南風でサンドバー決まりやすい" },
   { id:"shidashita",name:"志田下",     area:"千葉北", lat:35.380, lon:140.380, offshore:247, bottom:"サンド",       note:"上級者向け・ロングボード禁止" },
 ];
-let state = { data:null, day:0, area:'all' };
+
+let state = { data:null, hourly:null, day:0, area:'all' };
+
+// ── utils ──
 const compass = d => { if(d==null||isNaN(d))return'-'; const a=["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"]; return a[Math.round(d/22.5)%16]; };
 const adiff = (a,b) => { let d=Math.abs(a-b)%360; return d>180?360-d:d; };
 const fmtDate = d => { if(!d)return''; const dt=new Date(d+'T00:00:00+09:00'); return `${dt.getMonth()+1}/${dt.getDate()}(${'日月火水木金土'[dt.getDay()]})`; };
-const avg = arr => arr.length ? arr.reduce((a,b)=>a+b,0)/arr.length : null;
+const avg = arr => arr.filter(x=>x!=null).length ? arr.filter(x=>x!=null).reduce((a,b)=>a+b,0)/arr.filter(x=>x!=null).length : null;
+
 const windScore = (wd,off) => {
   if(wd==null) return {label:'データなし',color:'#888',score:1};
   const d=adiff(wd,off);
@@ -127,6 +204,15 @@ const totalRating = (ws,ss,wh) => {
   if(s>=7)return'◎'; if(s>=5)return'○'; if(s>=3)return'△'; return'×';
 };
 const ratingColor = r => ({'◎':'#00e5a0','○':'#7ecfff','△':'#ffd966','×':'#ff6b6b'}[r]||'#888');
+
+// 風向きを矢印に変換（風が吹いてくる方向→サーファーが受ける向き）
+const dirToArrow = d => {
+  if(d==null) return '·';
+  const arrows = ['↓','↙','←','↖','↑','↗','→','↘'];
+  return arrows[Math.round(d/45)%8];
+};
+
+// ── データ取得 ──
 async function fetchPoint(p) {
   const tz='Asia%2FTokyo';
   const [mRes,wRes] = await Promise.all([
@@ -134,41 +220,252 @@ async function fetchPoint(p) {
     fetch(`https://api.open-meteo.com/v1/forecast?latitude=${p.lat}&longitude=${p.lon}&hourly=wind_speed_10m,wind_direction_10m&forecast_days=3&timezone=${tz}&wind_speed_unit=ms`),
   ]);
   const [m,w] = await Promise.all([mRes.json(),wRes.json()]);
-  const times=m.hourly?.time||[];
-  const byDay={};
-  times.forEach((t,i)=>{
-    const date=t.slice(0,10),hour=parseInt(t.slice(11,13));
-    if(hour<6||hour>18)return;
-    if(!byDay[date])byDay[date]={swh:[],swd:[],swp:[],wh:[],wspd:[],wdir:[]};
-    const push=(arr,v)=>{if(v!=null)arr.push(v);};
-    push(byDay[date].swh,m.hourly.swell_wave_height?.[i]);
-    push(byDay[date].swd,m.hourly.swell_wave_direction?.[i]);
-    push(byDay[date].swp,m.hourly.swell_wave_period?.[i]);
-    push(byDay[date].wh,m.hourly.wave_height?.[i]);
-    push(byDay[date].wspd,w.hourly?.wind_speed_10m?.[i]);
-    push(byDay[date].wdir,w.hourly?.wind_direction_10m?.[i]);
-  });
-  return Object.entries(byDay).slice(0,3).map(([date,v])=>({
-    date,
-    swell_wave_height:avg(v.swh),
-    swell_wave_direction:avg(v.swd),
-    swell_wave_period:avg(v.swp),
-    wave_height:avg(v.wh),
-    wind_speed:avg(v.wspd),
-    wind_direction:avg(v.wdir),
+  const times = m.hourly?.time||[];
+
+  // 時間別データ（全時間）
+  const hourlyAll = times.map((t,i)=>({
+    time: t,
+    hour: parseInt(t.slice(11,13)),
+    date: t.slice(0,10),
+    swh:  m.hourly.swell_wave_height?.[i]??null,
+    swd:  m.hourly.swell_wave_direction?.[i]??null,
+    swp:  m.hourly.swell_wave_period?.[i]??null,
+    wh:   m.hourly.wave_height?.[i]??null,
+    wspd: w.hourly?.wind_speed_10m?.[i]??null,
+    wdir: w.hourly?.wind_direction_10m?.[i]??null,
   }));
+
+  // 日中平均（日次サマリー用）
+  const byDay = {};
+  hourlyAll.forEach(h => {
+    if(h.hour<6||h.hour>18) return;
+    if(!byDay[h.date]) byDay[h.date]={swh:[],swd:[],swp:[],wh:[],wspd:[],wdir:[]};
+    byDay[h.date].swh.push(h.swh);
+    byDay[h.date].swd.push(h.swd);
+    byDay[h.date].swp.push(h.swp);
+    byDay[h.date].wh.push(h.wh);
+    byDay[h.date].wspd.push(h.wspd);
+    byDay[h.date].wdir.push(h.wdir);
+  });
+
+  const daily = Object.entries(byDay).slice(0,3).map(([date,v])=>({
+    date,
+    swell_wave_height:    avg(v.swh),
+    swell_wave_direction: avg(v.swd),
+    swell_wave_period:    avg(v.swp),
+    wave_height:          avg(v.wh),
+    wind_speed:           avg(v.wspd),
+    wind_direction:       avg(v.wdir),
+  }));
+
+  return { daily, hourlyAll };
 }
+
+// ── Canvas グラフ描画 ──
+function drawMiniGraph(canvas, waveData, windData) {
+  const dpr = window.devicePixelRatio||1;
+  const W = canvas.offsetWidth||300, H = 48;
+  canvas.width = W*dpr; canvas.height = H*dpr;
+  canvas.style.width = W+'px'; canvas.style.height = H+'px';
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr,dpr);
+
+  const valid = v => v!=null && !isNaN(v);
+  const waveMax = Math.max(...waveData.filter(valid), 0.1);
+  const windMax = Math.max(...windData.filter(valid), 0.1);
+  const n = waveData.length;
+  if(n<2) return;
+
+  const xStep = W/(n-1);
+
+  // 波高（塗りつぶし）
+  ctx.beginPath();
+  ctx.moveTo(0, H);
+  waveData.forEach((v,i)=>{
+    const x = i*xStep;
+    const y = valid(v) ? H - (v/waveMax)*(H-4) : H;
+    i===0 ? ctx.lineTo(x,y) : ctx.lineTo(x,y);
+  });
+  ctx.lineTo((n-1)*xStep, H);
+  ctx.closePath();
+  ctx.fillStyle='rgba(0,229,160,0.2)';
+  ctx.fill();
+
+  // 波高ライン
+  ctx.beginPath();
+  waveData.forEach((v,i)=>{
+    const x=i*xStep, y=valid(v)?H-(v/waveMax)*(H-4):H;
+    i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+  });
+  ctx.strokeStyle='#00e5a0'; ctx.lineWidth=1.5; ctx.stroke();
+
+  // 風速ライン
+  ctx.beginPath();
+  windData.forEach((v,i)=>{
+    const x=i*xStep, y=valid(v)?H-(v/windMax)*(H-4):H;
+    i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+  });
+  ctx.strokeStyle='#7ecfff'; ctx.lineWidth=1; ctx.setLineDash([2,2]); ctx.stroke();
+  ctx.setLineDash([]);
+}
+
+function drawDetailGraph(canvas, data, color, maxVal) {
+  const dpr = window.devicePixelRatio||1;
+  const W = canvas.offsetWidth||300, H = 80;
+  canvas.width = W*dpr; canvas.height = H*dpr;
+  canvas.style.width = W+'px'; canvas.style.height = H+'px';
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr,dpr);
+
+  const valid = v => v!=null && !isNaN(v);
+  const max = maxVal || Math.max(...data.filter(valid), 0.1);
+  const n = data.length;
+  if(n<2) return;
+  const xStep = W/(n-1);
+
+  // 塗りつぶし
+  ctx.beginPath();
+  ctx.moveTo(0,H);
+  data.forEach((v,i)=>{
+    const x=i*xStep, y=valid(v)?H-(v/max)*(H-6):H;
+    i===0?ctx.lineTo(x,y):ctx.lineTo(x,y);
+  });
+  ctx.lineTo((n-1)*xStep,H); ctx.closePath();
+  ctx.fillStyle=color+'33'; ctx.fill();
+
+  // ライン
+  ctx.beginPath();
+  data.forEach((v,i)=>{
+    const x=i*xStep, y=valid(v)?H-(v/max)*(H-6):H;
+    i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+  });
+  ctx.strokeStyle=color; ctx.lineWidth=2; ctx.stroke();
+
+  // 値ラベル（最大・最小）
+  const maxIdx = data.reduce((mi,v,i,arr)=>(!valid(v)||v<arr[mi])?mi:i, 0);
+  if(valid(data[maxIdx])){
+    const x=maxIdx*xStep, y=H-(data[maxIdx]/max)*(H-6);
+    ctx.fillStyle=color; ctx.font=`bold ${9*dpr/dpr}px sans-serif`; ctx.textAlign='center';
+    ctx.fillText(data[maxIdx].toFixed(1), Math.min(Math.max(x,16),W-16), Math.max(y-4,10));
+  }
+}
+
+// ── 詳細画面 ──
+function openDetail(pointId) {
+  const p = POINTS.find(x=>x.id===pointId);
+  if(!p||!state.data) return;
+
+  const daily = state.data[p.id]?.daily[state.day];
+  const hourlyAll = state.data[p.id]?.hourlyAll||[];
+  if(!daily) return;
+
+  const wh = daily.swell_wave_height??daily.wave_height??0;
+  const ws = windScore(daily.wind_direction, p.offshore);
+  const ss = swellScore(daily.swell_wave_direction, p.offshore);
+  const rating = totalRating(ws,ss,wh);
+  const sz = sizeLabel(wh);
+
+  // 選択日の時間別データ（6〜18時、2時間ごと）
+  const dateStr = daily.date;
+  const hours = [6,8,10,12,14,16,18];
+  const getHour = (arr, h) => arr.find(x=>x.date===dateStr&&x.hour===h);
+
+  const waveByHour  = hours.map(h=>getHour(hourlyAll,h)?.wh??null);
+  const swellByHour = hours.map(h=>getHour(hourlyAll,h)?.swh??null);
+  const windByHour  = hours.map(h=>getHour(hourlyAll,h)?.wspd??null);
+  const windDirByHour = hours.map(h=>getHour(hourlyAll,h)?.wdir??null);
+  const periodByHour  = hours.map(h=>getHour(hourlyAll,h)?.swp??null);
+
+  const hourLabels = hours.map(h=>`${h}時`);
+
+  document.getElementById('detailName').textContent = p.name;
+  const dr = document.getElementById('detailRating');
+  dr.textContent = rating; dr.style.color = ratingColor(rating);
+
+  document.getElementById('detailBody').innerHTML = `
+    <div class="detail-info">
+      <span class="detail-badge" style="background:${ws.color}18;color:${ws.color};border:1px solid ${ws.color}40">風: ${ws.label}</span>
+      <span class="detail-badge" style="background:${ss.color}18;color:${ss.color};border:1px solid ${ss.color}40">スウェル: ${ss.label}</span>
+      <span class="detail-badge" style="background:${sz.color}18;color:${sz.color};border:1px solid ${sz.color}40">${sz.label}</span>
+    </div>
+
+    <div class="chart-section">
+      <div class="chart-title">🌊 波高（m）</div>
+      <div class="chart-wrap">
+        <canvas id="chartWave"></canvas>
+        <div class="chart-labels">${hourLabels.map(l=>`<span>${l}</span>`).join('')}</div>
+      </div>
+    </div>
+
+    <div class="chart-section">
+      <div class="chart-title">💨 風速（m/s）</div>
+      <div class="chart-wrap">
+        <canvas id="chartWind"></canvas>
+        <div class="chart-labels">${hourLabels.map(l=>`<span>${l}</span>`).join('')}</div>
+      </div>
+      <div class="wind-row" id="windDirRow"></div>
+    </div>
+
+    <div class="chart-section">
+      <div class="chart-title">〜 スウェル高さ（m）</div>
+      <div class="chart-wrap">
+        <canvas id="chartSwell"></canvas>
+        <div class="chart-labels">${hourLabels.map(l=>`<span>${l}</span>`).join('')}</div>
+      </div>
+    </div>
+
+    <div class="chart-section">
+      <div class="chart-title">⏱ 周期（s）</div>
+      <div class="chart-wrap">
+        <canvas id="chartPeriod"></canvas>
+        <div class="chart-labels">${hourLabels.map(l=>`<span>${l}</span>`).join('')}</div>
+      </div>
+    </div>
+
+    <div style="font-size:10px;color:#3a6a7a;margin-top:8px">${p.note}</div>
+  `;
+
+  document.getElementById('listView').style.display='none';
+  document.getElementById('detailView').style.display='block';
+  document.getElementById('detailView').scrollTop=0;
+
+  // グラフ描画（レイアウト確定後）
+  requestAnimationFrame(()=>{
+    drawDetailGraph(document.getElementById('chartWave'),  waveByHour,  '#00e5a0');
+    drawDetailGraph(document.getElementById('chartWind'),  windByHour,  '#7ecfff');
+    drawDetailGraph(document.getElementById('chartSwell'), swellByHour, '#4ecdc4');
+    drawDetailGraph(document.getElementById('chartPeriod'),periodByHour,'#ffd966');
+
+    // 風向き矢印
+    const row = document.getElementById('windDirRow');
+    row.innerHTML = hours.map((h,i)=>`
+      <div class="wind-cell">
+        <div class="wind-time">${h}時</div>
+        <span class="wind-arrow" style="color:#7ecfff">${dirToArrow(windDirByHour[i])}</span>
+        <div class="wind-spd">${windByHour[i]!=null?windByHour[i].toFixed(1)+'m/s':'-'}</div>
+      </div>
+    `).join('');
+  });
+}
+
+function closeDetail() {
+  document.getElementById('detailView').style.display='none';
+  document.getElementById('listView').style.display='block';
+}
+
+// ── 一覧レンダリング ──
 function renderDayTabs() {
   const labels=['今日','明日','明後日'];
   document.getElementById('dayTabs').innerHTML=labels.map((label,i)=>{
-    const ds=state.data?(state.data[POINTS[0].id]?.[i]?.date||''):'';
+    const ds=state.data?(state.data[POINTS[0].id]?.daily[i]?.date||''):'';
     return `<button class="day-tab${state.day===i?' active':''}" onclick="setDay(${i})">${label}${ds?`<div class="sub">${fmtDate(ds)}</div>`:''}</button>`;
   }).join('');
 }
+
 function getRanked() {
   const pts=state.area==='all'?POINTS:POINTS.filter(p=>p.area===state.area);
   return pts.map(p=>{
-    const d=state.data?.[p.id]?.[state.day];
+    const d=state.data?.[p.id]?.daily[state.day];
     if(!d)return null;
     const wh=d.swell_wave_height??d.wave_height??0;
     const ws=windScore(d.wind_direction,p.offshore);
@@ -176,6 +473,7 @@ function getRanked() {
     return {...p,d,wh,ws,ss,rating:totalRating(ws,ss,wh)};
   }).filter(Boolean).sort((a,b)=>({'◎':0,'○':1,'△':2,'×':3}[a.rating]-{'◎':0,'○':1,'△':2,'×':3}[b.rating]));
 }
+
 function renderMain() {
   const el=document.getElementById('main');
   if(!state.data){
@@ -183,19 +481,72 @@ function renderMain() {
     return;
   }
   const ranked=getRanked();
-  const top3=ranked.slice(0,3).map((p,i)=>`<div class="recommend-card" style="border:1px solid ${ratingColor(p.rating)}35"><div class="rank">#${i+1}</div><div class="name">${p.name}</div><div class="rating" style="color:${ratingColor(p.rating)}">${p.rating}</div><div class="area-sub">${p.area}</div></div>`).join('');
+  const top3=ranked.slice(0,3).map((p,i)=>`
+    <div class="recommend-card" style="border:1px solid ${ratingColor(p.rating)}35" onclick="openDetail('${p.id}')">
+      <div class="rank">#${i+1}</div>
+      <div class="name">${p.name}</div>
+      <div class="rating" style="color:${ratingColor(p.rating)}">${p.rating}</div>
+      <div class="area-sub">${p.area}</div>
+    </div>`).join('');
+
   const cards=ranked.map(p=>{
     const sz=sizeLabel(p.wh);
-    return `<div class="point-card" style="border-left-color:${ratingColor(p.rating)}"><div class="card-header"><span class="card-name">${p.name}</span><span class="card-meta">${p.area} · ${p.bottom}</span><span class="card-rating" style="color:${ratingColor(p.rating)}">${p.rating}</span></div><div class="stats-grid"><div class="stat"><div class="stat-label">波高</div><div class="stat-val">${p.wh.toFixed(1)}m</div><div class="stat-sub" style="color:${sz.color}">${sz.label}</div></div><div class="stat"><div class="stat-label">周期</div><div class="stat-val">${(p.d.swell_wave_period??0).toFixed(0)}s</div><div class="stat-sub" style="color:#4a8fa0">スウェル</div></div><div class="stat"><div class="stat-label">風速</div><div class="stat-val">${(p.d.wind_speed??0).toFixed(1)}m/s</div><div class="stat-sub" style="color:#4a8fa0">${compass(p.d.wind_direction)}</div></div></div><div class="badges"><span class="badge" style="background:${p.ws.color}18;color:${p.ws.color};border:1px solid ${p.ws.color}40">風: ${p.ws.label}</span><span class="badge" style="background:${p.ss.color}18;color:${p.ss.color};border:1px solid ${p.ss.color}40">スウェル: ${p.ss.label}</span></div><div class="point-note">${p.note}</div></div>`;
+    // ミニグラフ用データ（選択日の6〜18時）
+    const miniId='mini_'+p.id;
+    return `<div class="point-card" style="border-left-color:${ratingColor(p.rating)}" onclick="openDetail('${p.id}')">
+      <div class="card-header">
+        <span class="card-name">${p.name}</span>
+        <span class="card-meta">${p.area} · ${p.bottom}</span>
+        <span class="card-rating" style="color:${ratingColor(p.rating)}">${p.rating}</span>
+      </div>
+      <div class="stats-grid">
+        <div class="stat"><div class="stat-label">波高</div><div class="stat-val">${p.wh.toFixed(1)}m</div><div class="stat-sub" style="color:${sz.color}">${sz.label}</div></div>
+        <div class="stat"><div class="stat-label">周期</div><div class="stat-val">${(p.d.swell_wave_period??0).toFixed(0)}s</div><div class="stat-sub" style="color:#4a8fa0">スウェル</div></div>
+        <div class="stat"><div class="stat-label">風速</div><div class="stat-val">${(p.d.wind_speed??0).toFixed(1)}m/s</div><div class="stat-sub" style="color:#4a8fa0">${compass(p.d.wind_direction)}</div></div>
+      </div>
+      <div class="badges">
+        <span class="badge" style="background:${p.ws.color}18;color:${p.ws.color};border:1px solid ${p.ws.color}40">風: ${p.ws.label}</span>
+        <span class="badge" style="background:${p.ss.color}18;color:${p.ss.color};border:1px solid ${p.ss.color}40">スウェル: ${p.ss.label}</span>
+      </div>
+      <div class="point-note">${p.note}</div>
+      <div class="mini-graph">
+        <div class="mini-graph-title">波高 <span style="color:#00e5a0">━━</span>　風速 <span style="color:#7ecfff">╌╌</span>　6〜18時</div>
+        <canvas id="${miniId}" style="height:48px"></canvas>
+      </div>
+      <div class="tap-hint">タップで時間別詳細 →</div>
+    </div>`;
   }).join('');
-  el.innerHTML=`<button class="btn-refresh" onclick="loadData()">🔄 データを更新する</button><div class="section-label">★ Recommended</div><div class="recommend-row">${top3}</div><div class="section-label">All Points</div><div class="points-list">${cards}</div>`;
+
+  el.innerHTML=`
+    <button class="btn-refresh" onclick="loadData()">🔄 データを更新する</button>
+    <div class="section-label">★ Recommended</div>
+    <div class="recommend-row">${top3}</div>
+    <div class="section-label">All Points</div>
+    <div class="points-list">${cards}</div>`;
+
+  // ミニグラフ描画
+  requestAnimationFrame(()=>{
+    ranked.forEach(p=>{
+      const canvas=document.getElementById('mini_'+p.id);
+      if(!canvas)return;
+      const hourlyAll=state.data[p.id]?.hourlyAll||[];
+      const dateStr=p.d.date;
+      const hours=[6,8,10,12,14,16,18];
+      const waveData=hours.map(h=>hourlyAll.find(x=>x.date===dateStr&&x.hour===h)?.wh??null);
+      const windData=hours.map(h=>hourlyAll.find(x=>x.date===dateStr&&x.hour===h)?.wspd??null);
+      drawMiniGraph(canvas,waveData,windData);
+    });
+  });
 }
+
 function renderLoading(pct) {
   document.getElementById('main').innerHTML=`<div class="splash"><div class="wave-icon">🌊</div><div style="color:#4a8fa0;margin-bottom:16px">データ取得中... ${pct}%</div><div class="progress-wrap"><div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div><div class="progress-text">9ポイント順次取得中</div></div></div>`;
 }
+
 function renderError(msg) {
   document.getElementById('main').innerHTML=`<div class="error-box"><strong>⚠ 取得エラー</strong><br><span style="font-size:11px;opacity:.8">${msg}</span><button class="btn-retry" onclick="loadData()">再試行</button></div>`;
 }
+
 function setDay(i){state.day=i;renderDayTabs();renderMain();}
 function setArea(area,btn){
   state.area=area;
@@ -203,6 +554,7 @@ function setArea(area,btn){
   btn.classList.add('active');
   renderMain();
 }
+
 async function loadData(){
   state.data=null;renderDayTabs();renderLoading(0);
   try{
@@ -214,7 +566,9 @@ async function loadData(){
     state.data=results;renderDayTabs();renderMain();
   }catch(e){renderError(e.message);}
 }
+
 renderDayTabs();renderMain();
 </script>
+
 </body>
 </html>
