@@ -311,43 +311,62 @@ function drawMiniGraph(canvas, waveData, windData) {
 
 function drawDetailGraph(canvas, data, color, maxVal) {
   const dpr = window.devicePixelRatio||1;
-  const W = canvas.offsetWidth||300, H = 80;
+  const W = canvas.offsetWidth||300, H = 100;
   canvas.width = W*dpr; canvas.height = H*dpr;
   canvas.style.width = W+'px'; canvas.style.height = H+'px';
   const ctx = canvas.getContext('2d');
   ctx.scale(dpr,dpr);
 
   const valid = v => v!=null && !isNaN(v);
-  const max = maxVal || Math.max(...data.filter(valid), 0.1);
+  const validData = data.filter(valid);
+  if(validData.length < 2) return;
+  const max = maxVal || Math.max(...validData, 0.1);
+  const min = Math.min(...validData);
+  const range = max - min || 0.1;
   const n = data.length;
-  if(n<2) return;
   const xStep = W/(n-1);
+  // 数値ラベル用に上下マージン確保
+  const TOP = 18, BOTTOM = 8;
+  const graphH = H - TOP - BOTTOM;
+
+  const getY = v => valid(v) ? TOP + graphH - (v - min) / range * graphH : H;
 
   // 塗りつぶし
   ctx.beginPath();
-  ctx.moveTo(0,H);
-  data.forEach((v,i)=>{
-    const x=i*xStep, y=valid(v)?H-(v/max)*(H-6):H;
-    i===0?ctx.lineTo(x,y):ctx.lineTo(x,y);
+  ctx.moveTo(0, H);
+  data.forEach((v,i) => {
+    const x = i*xStep, y = getY(v);
+    i===0 ? ctx.lineTo(x,y) : ctx.lineTo(x,y);
   });
-  ctx.lineTo((n-1)*xStep,H); ctx.closePath();
-  ctx.fillStyle=color+'33'; ctx.fill();
+  ctx.lineTo((n-1)*xStep, H); ctx.closePath();
+  ctx.fillStyle = color+'28'; ctx.fill();
 
   // ライン
   ctx.beginPath();
-  data.forEach((v,i)=>{
-    const x=i*xStep, y=valid(v)?H-(v/max)*(H-6):H;
-    i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+  data.forEach((v,i) => {
+    const x=i*xStep, y=getY(v);
+    i===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
   });
   ctx.strokeStyle=color; ctx.lineWidth=2; ctx.stroke();
 
-  // 値ラベル（最大・最小）
-  const maxIdx = data.reduce((mi,v,i,arr)=>(!valid(v)||v<arr[mi])?mi:i, 0);
-  if(valid(data[maxIdx])){
-    const x=maxIdx*xStep, y=H-(data[maxIdx]/max)*(H-6);
-    ctx.fillStyle=color; ctx.font=`bold ${9*dpr/dpr}px sans-serif`; ctx.textAlign='center';
-    ctx.fillText(data[maxIdx].toFixed(1), Math.min(Math.max(x,16),W-16), Math.max(y-4,10));
-  }
+  // 各データ点に数値ラベル
+  ctx.font = `bold 9px sans-serif`;
+  ctx.textAlign = 'center';
+  data.forEach((v,i) => {
+    if(!valid(v)) return;
+    const x = i*xStep;
+    const y = getY(v);
+    // 点
+    ctx.beginPath();
+    ctx.arc(x, y, 2.5, 0, Math.PI*2);
+    ctx.fillStyle = color; ctx.fill();
+    // ラベル（点の上）
+    ctx.fillStyle = color;
+    const label = v >= 10 ? v.toFixed(0) : v.toFixed(1);
+    const lx = Math.min(Math.max(x, 12), W-12);
+    const ly = Math.max(y - 5, 10);
+    ctx.fillText(label, lx, ly);
+  });
 }
 
 // ── 詳細画面 ──
