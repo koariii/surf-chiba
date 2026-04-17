@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>千葉 波チェック</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    min-height:100vh;
+    background: linear-gradient(160deg,#020c14 0%,#041824 50%,#02111e 100%);
+    color:#e8f4f8;
+    font-family:'Hiragino Sans','Noto Sans JP',sans-serif;
+    padding-bottom:48px;
+  }
+  header {
+    background:linear-gradient(90deg,#041824,#062030);
+    border-bottom:1px solid rgba(0,180,200,0.2);
+    padding:20px 24px 16px;
+    display:flex; align-items:flex-end;
+  }
+  .header-left .label { font-size:11px; color:#4ecdc4; letter-spacing:3px; margin-bottom:4px; text-transform:uppercase; }
+  .header-left h1 { font-size:24px; font-weight:700; color:#fff; }
+  .header-right { margin-left:auto; font-size:11px; color:#4a8fa0; }
+  .container { padding:20px 16px 0; }
+  .day-tabs { display:flex; gap:8px; margin-bottom:16px; }
+  .day-tab { flex:1; padding:10px 4px; border:none; border-radius:10px; cursor:pointer; background:rgba(255,255,255,0.05); color:#4a8fa0; font-size:13px; font-family:inherit; transition:all .2s; }
+  .day-tab.active { background:linear-gradient(135deg,#0d7377,#14a0a5); color:#fff; font-weight:700; }
+  .day-tab .sub { font-size:10px; opacity:.75; margin-top:2px; }
+  .area-tabs { display:flex; gap:8px; margin-bottom:20px; }
+  .area-tab { padding:6px 14px; border:1px solid rgba(78,205,196,0.2); border-radius:20px; cursor:pointer; background:transparent; color:#4a8fa0; font-size:12px; font-family:inherit; transition:all .2s; }
+  .area-tab.active { border-color:#4ecdc4; color:#4ecdc4; font-weight:700; }
+  .splash { text-align:center; padding:56px 0; }
+  .splash .wave-icon { font-size:48px; margin-bottom:16px; }
+  .splash p { color:#4a8fa0; font-size:13px; line-height:1.9; margin-bottom:24px; }
+  .btn-load { background:linear-gradient(135deg,#0d7377,#14a0a5); border:none; border-radius:14px; color:#fff; padding:14px 40px; font-size:15px; font-weight:700; cursor:pointer; font-family:inherit; }
+  .progress-wrap { max-width:200px; margin:16px auto 0; }
+  .progress-bar { height:4px; background:rgba(78,205,196,0.15); border-radius:4px; overflow:hidden; }
+  .progress-fill { height:100%; background:linear-gradient(90deg,#0d7377,#4ecdc4); transition:width .3s; }
+  .progress-text { font-size:11px; color:#4a8fa0; text-align:center; margin-top:6px; }
+  .error-box { background:rgba(255,100,100,0.1); border:1px solid rgba(255,100,100,0.3); border-radius:12px; padding:16px; color:#ff8888; font-size:13px; margin-bottom:16px; }
+  .btn-retry { margin-top:10px; background:rgba(255,100,100,0.2); border:none; color:#ff8888; padding:6px 16px; border-radius:8px; cursor:pointer; font-size:12px; font-family:inherit; }
+  .btn-refresh { width:100%; margin-bottom:20px; padding:9px 0; background:rgba(78,205,196,0.07); border:1px solid rgba(78,205,196,0.2); border-radius:8px; color:#4ecdc4; font-size:12px; cursor:pointer; font-family:inherit; }
+  .section-label { font-size:11px; color:#4ecdc4; letter-spacing:2px; margin-bottom:10px; text-transform:uppercase; }
+  .recommend-row { display:flex; gap:8px; overflow-x:auto; padding-bottom:4px; margin-bottom:24px; }
+  .recommend-card { min-width:130px; flex-shrink:0; background:linear-gradient(135deg,rgba(13,115,119,0.25),rgba(4,24,36,0.7)); border-radius:14px; padding:12px 14px; }
+  .recommend-card .rank { font-size:10px; color:#4a8fa0; margin-bottom:4px; }
+  .recommend-card .name { font-size:16px; font-weight:700; margin-bottom:6px; }
+  .recommend-card .rating { font-size:24px; font-weight:900; }
+  .recommend-card .area-sub { font-size:10px; color:#4a8fa0; margin-top:4px; }
+  .points-list { display:flex; flex-direction:column; gap:10px; }
+  .point-card { background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.07); border-radius:12px; padding:14px 16px; border-left-width:3px; border-left-style:solid; }
+  .card-header { display:flex; align-items:center; margin-bottom:10px; }
+  .card-name { font-size:16px; font-weight:700; }
+  .card-meta { font-size:11px; color:#4a8fa0; margin-left:8px; }
+  .card-rating { font-size:24px; font-weight:900; margin-left:auto; }
+  .stats-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:10px; }
+  .stat { background:rgba(0,0,0,0.25); border-radius:8px; padding:8px 10px; }
+  .stat .stat-label { font-size:9px; color:#4a8fa0; margin-bottom:3px; }
+  .stat .stat-val { font-size:14px; font-weight:700; }
+  .stat .stat-sub { font-size:9px; margin-top:2px; }
+  .badges { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px; }
+  .badge { font-size:11px; padding:3px 8px; border-radius:6px; }
+  .point-note { font-size:10px; color:#3a6a7a; }
+</style>
+</head>
+<body>
+<header>
+  <div class="header-left">
+    <div class="label">Surf Conditions</div>
+    <h1>千葉 波チェック</h1>
+  </div>
+  <div class="header-right">Open-Meteo</div>
+</header>
+<div class="container">
+  <div class="day-tabs" id="dayTabs"></div>
+  <div class="area-tabs" id="areaTabs">
+    <button class="area-tab active" onclick="setArea('all',this)">全エリア</button>
+    <button class="area-tab" onclick="setArea('千葉南',this)">千葉南</button>
+    <button class="area-tab" onclick="setArea('千葉北',this)">千葉北</button>
+  </div>
+  <div id="main"></div>
+</div>
+<script>
+const POINTS = [
+  { id:"chikura",    name:"千倉",       area:"千葉南", lat:34.964, lon:139.960, offshore:225, bottom:"サンド",       note:"リバーマウス・周辺より1サイズ小" },
+  { id:"chitose",   name:"千歳",       area:"千葉南", lat:34.980, lon:139.940, offshore:270, bottom:"リーフ&サンド", note:"南西風に強い・リーフ浅い箇所あり" },
+  { id:"heisaura",  name:"平砂浦",     area:"千葉南", lat:34.940, lon:139.870, offshore:22,  bottom:"サンド",       note:"冬の西ウネリ拾う・空いてる" },
+  { id:"hanakago",  name:"花籠",       area:"千葉南", lat:35.000, lon:139.920, offshore:315, bottom:"リーフ&サンド", note:"強ウネリでクローズしやすい" },
+  { id:"kamogawa",  name:"鴨川マルキ", area:"千葉南", lat:35.110, lon:140.100, offshore:337, bottom:"リーフ&サンド", note:"北東風に強い・ローカルルール厳守" },
+  { id:"katagai",   name:"片貝・新堤", area:"千葉北", lat:35.430, lon:140.490, offshore:315, bottom:"サンド",       note:"イージー・波コンスタント" },
+  { id:"sakuta",    name:"作田",       area:"千葉北", lat:35.460, lon:140.460, offshore:292, bottom:"サンド",       note:"漁港効果で南〜南西風に強い" },
+  { id:"ichinomiya",name:"一宮",       area:"千葉北", lat:35.370, lon:140.370, offshore:270, bottom:"サンド",       note:"春〜夏の南風でサンドバー決まりやすい" },
+  { id:"shidashita",name:"志田下",     area:"千葉北", lat:35.380, lon:140.380, offshore:247, bottom:"サンド",       note:"上級者向け・ロングボード禁止" },
+];
+let state = { data:null, day:0, area:'all' };
+const compass = d => { if(d==null||isNaN(d))return'-'; const a=["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"]; return a[Math.round(d/22.5)%16]; };
+const adiff = (a,b) => { let d=Math.abs(a-b)%360; return d>180?360-d:d; };
+const fmtDate = d => { if(!d)return''; const dt=new Date(d+'T00:00:00+09:00'); return `${dt.getMonth()+1}/${dt.getDate()}(${'日月火水木金土'[dt.getDay()]})`; };
+const avg = arr => arr.length ? arr.reduce((a,b)=>a+b,0)/arr.length : null;
+const windScore = (wd,off) => {
+  if(wd==null) return {label:'データなし',color:'#888',score:1};
+  const d=adiff(wd,off);
+  if(d<=45)  return {label:'◎ オフショア',color:'#00e5a0',score:3};
+  if(d<=90)  return {label:'○ サイドオフ',color:'#7ecfff',score:2};
+  if(d<=135) return {label:'△ サイドオン',color:'#ffd966',score:1};
+  return            {label:'× オンショア',color:'#ff6b6b',score:0};
+};
+const swellScore = (sd,off) => {
+  if(sd==null) return {label:'データなし',color:'#888',score:1};
+  const face=(off+180)%360, d=adiff(sd,face);
+  if(d<=45)  return {label:'◎ 正面入射',color:'#00e5a0',score:3};
+  if(d<=90)  return {label:'○ 斜め入射',color:'#7ecfff',score:2};
+  if(d<=135) return {label:'△ 端入射',color:'#ffd966',score:1};
+  return            {label:'× 当たらない',color:'#ff6b6b',score:0};
+};
+const sizeLabel = h => {
+  if(!h||h<0.3) return {label:'フラット',color:'#555'};
+  if(h<0.6)  return {label:'ヒザ〜モモ',color:'#7ecfff'};
+  if(h<1.0)  return {label:'コシ〜ハラ',color:'#00e5a0'};
+  if(h<1.5)  return {label:'ムネ〜カタ',color:'#00e5a0'};
+  if(h<2.0)  return {label:'カタ〜アタマ',color:'#ffd966'};
+  return           {label:'アタマ以上',color:'#ff6b6b'};
+};
+const totalRating = (ws,ss,wh) => {
+  const s=ws.score+ss.score+(wh>=0.3&&wh<=2.0?2:wh<0.3?0:1);
+  if(s>=7)return'◎'; if(s>=5)return'○'; if(s>=3)return'△'; return'×';
+};
+const ratingColor = r => ({'◎':'#00e5a0','○':'#7ecfff','△':'#ffd966','×':'#ff6b6b'}[r]||'#888');
+async function fetchPoint(p) {
+  const tz='Asia%2FTokyo';
+  const [mRes,wRes] = await Promise.all([
+    fetch(`https://marine-api.open-meteo.com/v1/marine?latitude=${p.lat}&longitude=${p.lon}&hourly=swell_wave_height,swell_wave_direction,swell_wave_period,wave_height&forecast_days=3&timezone=${tz}`),
+    fetch(`https://api.open-meteo.com/v1/forecast?latitude=${p.lat}&longitude=${p.lon}&hourly=wind_speed_10m,wind_direction_10m&forecast_days=3&timezone=${tz}&wind_speed_unit=ms`),
+  ]);
+  const [m,w] = await Promise.all([mRes.json(),wRes.json()]);
+  const times=m.hourly?.time||[];
+  const byDay={};
+  times.forEach((t,i)=>{
+    const date=t.slice(0,10),hour=parseInt(t.slice(11,13));
+    if(hour<6||hour>18)return;
+    if(!byDay[date])byDay[date]={swh:[],swd:[],swp:[],wh:[],wspd:[],wdir:[]};
+    const push=(arr,v)=>{if(v!=null)arr.push(v);};
+    push(byDay[date].swh,m.hourly.swell_wave_height?.[i]);
+    push(byDay[date].swd,m.hourly.swell_wave_direction?.[i]);
+    push(byDay[date].swp,m.hourly.swell_wave_period?.[i]);
+    push(byDay[date].wh,m.hourly.wave_height?.[i]);
+    push(byDay[date].wspd,w.hourly?.wind_speed_10m?.[i]);
+    push(byDay[date].wdir,w.hourly?.wind_direction_10m?.[i]);
+  });
+  return Object.entries(byDay).slice(0,3).map(([date,v])=>({
+    date,
+    swell_wave_height:avg(v.swh),
+    swell_wave_direction:avg(v.swd),
+    swell_wave_period:avg(v.swp),
+    wave_height:avg(v.wh),
+    wind_speed:avg(v.wspd),
+    wind_direction:avg(v.wdir),
+  }));
+}
+function renderDayTabs() {
+  const labels=['今日','明日','明後日'];
+  document.getElementById('dayTabs').innerHTML=labels.map((label,i)=>{
+    const ds=state.data?(state.data[POINTS[0].id]?.[i]?.date||''):'';
+    return `<button class="day-tab${state.day===i?' active':''}" onclick="setDay(${i})">${label}${ds?`<div class="sub">${fmtDate(ds)}</div>`:''}</button>`;
+  }).join('');
+}
+function getRanked() {
+  const pts=state.area==='all'?POINTS:POINTS.filter(p=>p.area===state.area);
+  return pts.map(p=>{
+    const d=state.data?.[p.id]?.[state.day];
+    if(!d)return null;
+    const wh=d.swell_wave_height??d.wave_height??0;
+    const ws=windScore(d.wind_direction,p.offshore);
+    const ss=swellScore(d.swell_wave_direction,p.offshore);
+    return {...p,d,wh,ws,ss,rating:totalRating(ws,ss,wh)};
+  }).filter(Boolean).sort((a,b)=>({'◎':0,'○':1,'△':2,'×':3}[a.rating]-{'◎':0,'○':1,'△':2,'×':3}[b.rating]));
+}
+function renderMain() {
+  const el=document.getElementById('main');
+  if(!state.data){
+    el.innerHTML=`<div class="splash"><div class="wave-icon">🌊</div><p>Open-Meteoから9ポイント分の<br>波・スウェル・風データを取得します</p><button class="btn-load" onclick="loadData()">波情報を取得する</button></div>`;
+    return;
+  }
+  const ranked=getRanked();
+  const top3=ranked.slice(0,3).map((p,i)=>`<div class="recommend-card" style="border:1px solid ${ratingColor(p.rating)}35"><div class="rank">#${i+1}</div><div class="name">${p.name}</div><div class="rating" style="color:${ratingColor(p.rating)}">${p.rating}</div><div class="area-sub">${p.area}</div></div>`).join('');
+  const cards=ranked.map(p=>{
+    const sz=sizeLabel(p.wh);
+    return `<div class="point-card" style="border-left-color:${ratingColor(p.rating)}"><div class="card-header"><span class="card-name">${p.name}</span><span class="card-meta">${p.area} · ${p.bottom}</span><span class="card-rating" style="color:${ratingColor(p.rating)}">${p.rating}</span></div><div class="stats-grid"><div class="stat"><div class="stat-label">波高</div><div class="stat-val">${p.wh.toFixed(1)}m</div><div class="stat-sub" style="color:${sz.color}">${sz.label}</div></div><div class="stat"><div class="stat-label">周期</div><div class="stat-val">${(p.d.swell_wave_period??0).toFixed(0)}s</div><div class="stat-sub" style="color:#4a8fa0">スウェル</div></div><div class="stat"><div class="stat-label">風速</div><div class="stat-val">${(p.d.wind_speed??0).toFixed(1)}m/s</div><div class="stat-sub" style="color:#4a8fa0">${compass(p.d.wind_direction)}</div></div></div><div class="badges"><span class="badge" style="background:${p.ws.color}18;color:${p.ws.color};border:1px solid ${p.ws.color}40">風: ${p.ws.label}</span><span class="badge" style="background:${p.ss.color}18;color:${p.ss.color};border:1px solid ${p.ss.color}40">スウェル: ${p.ss.label}</span></div><div class="point-note">${p.note}</div></div>`;
+  }).join('');
+  el.innerHTML=`<button class="btn-refresh" onclick="loadData()">🔄 データを更新する</button><div class="section-label">★ Recommended</div><div class="recommend-row">${top3}</div><div class="section-label">All Points</div><div class="points-list">${cards}</div>`;
+}
+function renderLoading(pct) {
+  document.getElementById('main').innerHTML=`<div class="splash"><div class="wave-icon">🌊</div><div style="color:#4a8fa0;margin-bottom:16px">データ取得中... ${pct}%</div><div class="progress-wrap"><div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div><div class="progress-text">9ポイント順次取得中</div></div></div>`;
+}
+function renderError(msg) {
+  document.getElementById('main').innerHTML=`<div class="error-box"><strong>⚠ 取得エラー</strong><br><span style="font-size:11px;opacity:.8">${msg}</span><button class="btn-retry" onclick="loadData()">再試行</button></div>`;
+}
+function setDay(i){state.day=i;renderDayTabs();renderMain();}
+function setArea(area,btn){
+  state.area=area;
+  document.querySelectorAll('.area-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderMain();
+}
+async function loadData(){
+  state.data=null;renderDayTabs();renderLoading(0);
+  try{
+    const results={};
+    for(let i=0;i<POINTS.length;i++){
+      results[POINTS[i].id]=await fetchPoint(POINTS[i]);
+      renderLoading(Math.round((i+1)/POINTS.length*100));
+    }
+    state.data=results;renderDayTabs();renderMain();
+  }catch(e){renderError(e.message);}
+}
+renderDayTabs();renderMain();
+</script>
+</body>
+</html>
