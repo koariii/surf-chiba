@@ -441,6 +441,42 @@ function openDetail(pointId) {
       </div>
     </div>
 
+    <div class="chart-section">
+      <div class="chart-title">📋 時間別数値</div>
+      <div style="overflow-x:auto">
+        <table style="width:100%;border-collapse:collapse;font-size:11px;min-width:340px">
+          <thead>
+            <tr>
+              <td style="padding:6px 8px;color:#4a8fa0;font-weight:600"></td>
+              ${hours.map(h=>`<td style="padding:6px 4px;color:#4a8fa0;text-align:center;font-weight:600">${h}時</td>`).join('')}
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-top:1px solid rgba(255,255,255,0.06)">
+              <td style="padding:7px 8px;color:#00e5a0;font-weight:600;white-space:nowrap">🌊 波高m</td>
+              ${waveByHour.map(v=>`<td style="padding:7px 4px;text-align:center;color:#e8f4f8">${v!=null?v.toFixed(1):'-'}</td>`).join('')}
+            </tr>
+            <tr style="border-top:1px solid rgba(255,255,255,0.06)">
+              <td style="padding:7px 8px;color:#4ecdc4;font-weight:600;white-space:nowrap">〜 スウェルm</td>
+              ${swellByHour.map(v=>`<td style="padding:7px 4px;text-align:center;color:#e8f4f8">${v!=null?v.toFixed(1):'-'}</td>`).join('')}
+            </tr>
+            <tr style="border-top:1px solid rgba(255,255,255,0.06)">
+              <td style="padding:7px 8px;color:#ffd966;font-weight:600;white-space:nowrap">⏱ 周期s</td>
+              ${periodByHour.map(v=>`<td style="padding:7px 4px;text-align:center;color:#e8f4f8">${v!=null?v.toFixed(0):'-'}</td>`).join('')}
+            </tr>
+            <tr style="border-top:1px solid rgba(255,255,255,0.06)">
+              <td style="padding:7px 8px;color:#7ecfff;font-weight:600;white-space:nowrap">💨 風速m/s</td>
+              ${windByHour.map(v=>`<td style="padding:7px 4px;text-align:center;color:#e8f4f8">${v!=null?v.toFixed(1):'-'}</td>`).join('')}
+            </tr>
+            <tr style="border-top:1px solid rgba(255,255,255,0.06)">
+              <td style="padding:7px 8px;color:#7ecfff;font-weight:600;white-space:nowrap">💨 風向き</td>
+              ${windDirByHour.map(v=>`<td style="padding:7px 4px;text-align:center;color:#7ecfff">${dirToArrow(v)}</td>`).join('')}
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
     <div style="font-size:10px;color:#3a6a7a;margin-top:8px">${p.note}</div>
   `;
 
